@@ -17,9 +17,9 @@ parseline(char *line, int len, char *key, char *val)
   if (si == len)
     return 1;
   /* read key until space or delim */
-  for (ki = 0; si < len && line[si] != ' ' && line[si] != DELIM; si++) {
-    if (ki == MAX_KEY_LEN) {
-      fprintf(stderr, "Key '%s' reached MAX_KEY_LEN (%d)\n", key, MAX_KEY_LEN);
+  for (ki = 0; si < len && line[si] != ' ' && line[si] != RB_CONFIG_DELIM; si++) {
+    if (ki == RB_CONFIG_MAX_KEY_LEN) {
+      fprintf(stderr, "Key '%s' reached MAX_KEY_LEN (%d)\n", key, RB_CONFIG_MAX_KEY_LEN);
       return 1;
     }
     key[ki++] = line[si];
@@ -32,19 +32,18 @@ parseline(char *line, int len, char *key, char *val)
   }
 
   /* skip until value */
-  for (; si < len && line[si] == ' ' || line[si] == DELIM; si++);
+  for (; si < len && line[si] == ' ' || line[si] == RB_CONFIG_DELIM; si++);
   if (si == len) {
-    printf("key '%s' does not have matching value\n", key);
+    fprintf(stderr, "key '%s' does not have matching value\n", key);
     return 1;
   }
 
   /* read value until end */
-  for (vi = 0; si < len; si++) {
+  for (vi = 0; si < len && vi < RB_CONFIG_MAX_VAL_LEN; si++) {
     val[vi++] = line[si];
   }
-
-  if (vi == MAX_KEY_LEN) {
-    fprintf(stderr, "Value '%s' reached MAX_VAL_LEN (%d)\n", val, MAX_VAL_LEN);
+  if (vi == RB_CONFIG_MAX_KEY_LEN) {
+    fprintf(stderr, "Value '%s' reached MAX_VAL_LEN (%d)\n", val, RB_CONFIG_MAX_VAL_LEN);
     return 1;
   }
   val[vi] = '\0';
@@ -55,14 +54,17 @@ void
 rb_readcfg(FILE *in, cfg_t cfg[], size_t n)
 {
   int i;
-  int len;
+  size_t len;
   char *line = NULL;
-  char key[MAX_KEY_LEN];
-  char val[MAX_VAL_LEN];
+  char key[RB_CONFIG_MAX_KEY_LEN];
+  char val[RB_CONFIG_MAX_VAL_LEN];
 
   while ((len = getline(&line, &len, in)) != -1) {
     if (len > 1) {
-      line[--len] = '\0';
+      /* line[--len] = '\0'; */
+      if (line[len-1] == '\n')
+        line[--len] = '\0';
+
       if (parseline(line, len, key, val)) {
         fprintf(stderr, "Failed to parse line\n");
         continue;
