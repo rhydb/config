@@ -86,3 +86,28 @@ rb_readcfg(FILE *in, cfg_t cfg[], size_t n)
   free(line);
 }
 
+void
+rb_writecfg(FILE *out, cfg_t cfg[], size_t n)
+{
+  size_t i;
+  /* 'key = val' */
+  char line[RB_CONFIG_MAX_KEY_LEN + 3 + RB_CONFIG_MAX_VAL_LEN];
+  for (i = 0; i < n; i++) {
+    unsigned int offset;
+
+    strcpy(line, cfg[i].key);
+    offset = strlen(cfg[i].key);
+
+    strcpy(line + offset, " = ");
+    offset += 3; // strlen(" = ")
+
+    if (strcmp(cfg[i].fmt, "%s") == 0)
+      strcpy(line+offset, cfg[i].ptr);
+    else
+      sprintf(line + offset, cfg[i].fmt, *((char*)(cfg[i].ptr)));
+
+    fputs(line, out);
+    fputc('\n', out);
+  }
+}
+

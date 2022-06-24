@@ -23,6 +23,7 @@ typedef struct cfg {
 } cfg_t;
 
 void rb_readcfg(FILE *in, cfg_t cfg[], size_t n);
+void rb_writecfg(FILE *out, cfg_t cfg[], size_t n);
 
 #endif // RB_CONFIG_H
 
