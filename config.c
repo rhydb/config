@@ -118,8 +118,9 @@ rb_writecfg(FILE *out, cfg_t cfg[], size_t n)
     strcpy(line, cfg[i].key);
     offset = strlen(cfg[i].key);
 
-    strcpy(line + offset, " = ");
-    offset += 3; // strlen(" = ")
+    line[offset++] = ' ';
+    line[offset++] = RB_CONFIG_DELIM;
+    line[offset++] = ' ';
 
 #define CAST_TYPE(type) (*((type *)(cfg[i].ptr) ))
     size_t len = strlen(cfg[i].fmt);
