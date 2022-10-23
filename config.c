@@ -1,4 +1,5 @@
 #include "config.h"
+#include "getline.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -59,7 +60,7 @@ rb_readcfg(FILE *in, cfg_t cfg[], size_t n)
   char val[RB_CONFIG_MAX_VAL_LEN];
   char fmt[6];
 
-  while ((len = getline(&line, &len, in)) != -1) {
+  while ((len = rb_getline(&line, &len, in)) != -1) {
     if (len > 1) {
       /* line[--len] = '\0'; */
       if (line[len-1] == '\n')

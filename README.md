@@ -37,7 +37,3 @@ fclose(f);
 ```
 
 `readcfg` simple takes a `FILE*`, meaning it can also read from stdin.
-
-## getline()
-
-Currently, this relies on `getline()` so may not be fully cross-platform.
