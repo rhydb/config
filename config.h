@@ -20,10 +20,13 @@ typedef struct cfg {
   const char *key;
   const char *fmt;
   void *ptr;
+  const char *def;
 } cfg_t;
 
 void rb_readcfg(FILE *in, cfg_t cfg[], size_t n);
 void rb_writecfg(FILE *out, cfg_t cfg[], size_t n);
+void rb_writecfg_def(FILE *out, cfg_t cfg[], size_t n);
+void rb_defaultcfg(cfg_t cfg[], size_t n);
 
 #endif // RB_CONFIG_H
 
